@@ -118,9 +118,7 @@
     </div>
 
     <div class="info-box">
-        <p><strong>Cotizado a:</strong></p>
-        <p>{{cliente_nombre}}</p>
-        <p>Atención: {{atencion}}</p>
+        {{cliente_info}}
     </div>
 
     <p>A continuación pongo a su consideración la siguiente cotización:</p>
@@ -161,8 +159,10 @@
         <p>COTIZACION CON VIGENCIA DE {{vigencia}} DIAS</p>
         <p>Quedo a sus órdenes,</p>
         
-        <div class="signature">
-            DANIEL GAONA
+        <div class="signature" style="text-align: left; width: 280px;">
+            ATENTAMENTE,<br><br>
+            <strong>EQUIPO DE VENTAS Y SERVICIO UPDM</strong><br>
+            <span style="font-size: 8.5px; color: #999; display: block; margin-top: 4px;">Cotización formal generada automáticamente por UPD-BOT</span>
         </div>
     </div>
 </body>

@@ -218,8 +218,32 @@ app.post('/api/quote/generate', async (req, res) => {
 
         const iva = subtotal * catalog.config.iva;
         const total = subtotal + iva;
-        const folio = Math.floor(Math.random() * 10000); // Folio aleatorio para el ejemplo
+
+        // Obtener o incrementar folio secuencial de manera persistente (empieza en 1001)
+        let folioNumero = 1001;
+        const folioFilePath = path.join(__dirname, 'folio.txt');
+        try {
+            if (fs.existsSync(folioFilePath)) {
+                const contenido = fs.readFileSync(folioFilePath, 'utf8').trim();
+                const parsed = parseInt(contenido, 10);
+                if (!isNaN(parsed)) {
+                    folioNumero = parsed + 1;
+                }
+            }
+            fs.writeFileSync(folioFilePath, folioNumero.toString(), 'utf8');
+        } catch (e) {
+            console.error("Error al gestionar folio secuencial:", e.message);
+            folioNumero = Math.floor(Math.random() * 9000) + 1000;
+        }
+        const folio = `BOT-${folioNumero}`;
+
         const fecha = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Formatear información del cliente evitando duplicar nombre si son iguales
+        let clienteInfoHtml = `<p style="margin: 3px 0;"><strong>Cotizado a:</strong> ${cliente_nombre.toUpperCase()}</p>`;
+        if (atencion && atencion.trim() !== '' && atencion.toLowerCase() !== cliente_nombre.toLowerCase()) {
+            clienteInfoHtml += `<p style="margin: 3px 0;"><strong>Atención:</strong> ${atencion.toUpperCase()}</p>`;
+        }
 
         // 2. Preparar el HTML
         let htmlTemplate = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
@@ -229,8 +253,7 @@ app.post('/api/quote/generate', async (req, res) => {
             .replace('{{folio}}', folio)
             .replace('{{fecha}}', fecha.toUpperCase())
             .replace('{{tc}}', tc.toFixed(4))
-            .replace('{{cliente_nombre}}', cliente_nombre.toUpperCase())
-            .replace('{{atencion}}', atencion.toUpperCase())
+            .replace('{{cliente_info}}', clienteInfoHtml)
             .replace(/{{moneda}}/g, catalog.config.moneda_default)
             .replace('{{subtotal}}', formatCurrency(subtotal))
             .replace('{{iva}}', formatCurrency(iva))
