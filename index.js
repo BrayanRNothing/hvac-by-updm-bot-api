@@ -1,5 +1,4 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
@@ -247,7 +246,9 @@ app.post('/api/quote/generate', async (req, res) => {
         // Asegurar que se cierra el </tbody> para no romper el HTML y que se vean los totales
         htmlTemplate = tableSplit[0] + '<tbody>' + itemsHtml + '</tbody>' + bottomSplit[1];
 
-        // 3. Generar PDF con Puppeteer
+        // 3. Generar PDF con Puppeteer (Importado dinámicamente para compatibilidad ESM)
+        const puppeteerModule = await import('puppeteer');
+        const puppeteer = puppeteerModule.default || puppeteerModule;
         const browser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
