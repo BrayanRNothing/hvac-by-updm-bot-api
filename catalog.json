@@ -1,0 +1,60 @@
+{
+  "config": {
+    "tipo_cambio_base": 20,
+    "iva": 0.16,
+    "moneda_default": "USD",
+    "vigencia_dias": 15
+  },
+  "servicios": {
+    "recubrimiento": {
+      "ZGC102-RC": {
+        "descripcion": "PRUEBA DESDE GOOGLE SHEETS",
+        "precio_usd": 1198.8
+      },
+      "ABUQ22-RC": {
+        "descripcion": "Recubrimiento anticorrosivo Unidad ABUQ22",
+        "precio_usd": 890
+      },
+      "ABUQ30-RC": {
+        "descripcion": "Recubrimiento anticorrosivo Unidad ABUQ30",
+        "precio_usd": 1150
+      },
+      "AK-Q048-RC": {
+        "descripcion": "Recubrimiento anticorrosivo Unidad Completa AK-Q048",
+        "precio_usd": 1850
+      },
+      "AUUQ40GH5-RC": {
+        "descripcion": "Recubrimiento anticorrosivo Unidad AUUQ40GH5",
+        "precio_usd": 2100
+      },
+      "AUUQ50GH5-RC": {
+        "descripcion": "Recubrimiento anticorrosivo Unidad AUUQ50GH5",
+        "precio_usd": 2400
+      },
+      "DSC120-SCG": {
+        "descripcion": "Recubrimiento anticorrosivo para Unidad Paquete DSC120",
+        "precio_usd": 2950
+      },
+      "DX6LN-08RUN-SE": {
+        "descripcion": "Recubrimiento anticorrosivo Solo Serpentín Evaporador DX6LN-08",
+        "precio_usd": 650
+      },
+      "DX6LN-12RUN-SE": {
+        "descripcion": "Recubrimiento anticorrosivo Solo Serpentín Evaporador DX6LN-12",
+        "precio_usd": 780
+      }
+    },
+    "mantenimiento": {
+      "BASE": {
+        "descripcion": "Mantenimiento Preventivo Base HVAC",
+        "precio_usd": 180
+      }
+    },
+    "viaticos": {
+      "VIATICOS-APL-FOR": {
+        "descripcion": "Viáticos aplicables fuera de Monterrey/Apodaca",
+        "precio_usd": 150
+      }
+    }
+  }
+}
