@@ -1,3 +1,11 @@
+// Polyfill Web Streams API para Node.js < 18 (requerido por Puppeteer)
+if (typeof ReadableStream === 'undefined') {
+    const webStreams = require('stream/web');
+    global.ReadableStream = webStreams.ReadableStream;
+    global.WritableStream = webStreams.WritableStream;
+    global.TransformStream = webStreams.TransformStream;
+}
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -249,11 +257,17 @@ app.post('/api/quote/generate', async (req, res) => {
         // 3. Generar PDF con Puppeteer (Importado dinámicamente para compatibilidad ESM)
         const puppeteerModule = await import('puppeteer');
         const puppeteer = puppeteerModule.default || puppeteerModule;
+
+        // En Railway, Chromium puede estar instalado en /usr/bin/chromium o /usr/bin/chromium-browser
+        const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
+            (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
+
         const browser = await puppeteer.launch({
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            executablePath,
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
         });
         const page = await browser.newPage();
-        await page.setContent(htmlTemplate);
+        await page.setContent(htmlTemplate, { waitUntil: 'networkidle0' });
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
 
