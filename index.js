@@ -16,6 +16,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Servir la carpeta de cotizaciones para que sean accesibles públicamente por URL
+app.use('/quotes', express.static(path.join(__dirname, 'quotes')));
+
 let catalog = require('./catalog.json');
 const axios = require('axios');
 
@@ -294,14 +297,29 @@ app.post('/api/quote/generate', async (req, res) => {
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
 
-        // 4. Enviar PDF en base64 para n8n y Evolution API
+        // 4. Guardar PDF localmente para que sea accesible públicamente por URL
+        const quotesDir = path.join(__dirname, 'quotes');
+        if (!fs.existsSync(quotesDir)) {
+            fs.mkdirSync(quotesDir, { recursive: true });
+        }
+        const fileName = `Cotizacion_${folio}.pdf`;
+        const pdfPath = path.join(quotesDir, fileName);
+        fs.writeFileSync(pdfPath, pdfBuffer);
+
+        // Construir la URL pública dinámica del PDF
+        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+        const host = req.get('host');
+        const pdfUrl = `${protocol}://${host}/quotes/${fileName}`;
+
+        // 5. Enviar PDF en base64 para n8n y Evolution API con su URL pública
         const base64Pdf = Buffer.from(pdfBuffer).toString('base64');
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({
             success: true,
-            fileName: `Cotizacion_${folio}.pdf`,
+            fileName: fileName,
             mimetype: 'application/pdf',
-            document_b64: base64Pdf
+            document_b64: base64Pdf,
+            pdfUrl: pdfUrl
         }));
 
     } catch (error) {
