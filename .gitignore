@@ -1,0 +1,17 @@
+# Dependencias de Node
+node_modules/
+npm-debug.log*
+
+# Variables de entorno y llaves privadas
+.env
+.env.local
+
+# Archivos temporales de prueba o compilados
+*.pdf
+test_quote.pdf
+catalog.json
+
+# Logs y SO
+*.log
+.DS_Store
+Thumbs.db

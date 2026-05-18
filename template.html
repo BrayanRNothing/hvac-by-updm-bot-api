@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cotización Infiniguard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            font-size: 12px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .company-info h1 {
+            color: #0093E9;
+            margin: 0;
+            font-size: 24px;
+        }
+        .company-info p {
+            margin: 2px 0;
+            color: #666;
+        }
+        .quote-title {
+            text-align: right;
+        }
+        .quote-title h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: normal;
+        }
+        .quote-meta {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .quote-meta table {
+            margin-left: auto;
+        }
+        .info-box {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .info-box p {
+            margin: 3px 0;
+        }
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table.items th {
+            background-color: #eee;
+            text-align: left;
+            padding: 8px;
+            border-bottom: 2px solid #ddd;
+        }
+        table.items td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        .totals {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .totals-table {
+            width: 250px;
+        }
+        .totals-table td {
+            padding: 5px;
+            text-align: right;
+        }
+        .totals-table .label {
+            font-weight: bold;
+        }
+        .totals-table .amount {
+            color: #0093E9;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 10px;
+            color: #888;
+        }
+        .signature {
+            margin-top: 60px;
+            border-top: 1px solid #ccc;
+            width: 200px;
+            text-align: center;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-info">
+            <h1>INFINIGUARD MEXICO</h1>
+            <p>RFC IME191002KLA</p>
+            <p>KAPPA 420, Parque Industrial Milenium, Del. Ciudad Apodaca</p>
+            <p>Apodaca, Nuevo León, México CP: 66626</p>
+        </div>
+        <div class="quote-title">
+            <h2>Cotización</h2>
+            <div class="quote-meta">
+                <table>
+                    <tr><td><strong>Folio:</strong></td><td style="color: #0093E9; font-size: 18px; font-weight: bold;">{{folio}}</td></tr>
+                    <tr><td><strong>Fecha:</strong></td><td>{{fecha}}</td></tr>
+                    <tr><td><strong>T.C.:</strong></td><td>{{tc}}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Cotizado a:</strong></p>
+        <p>{{cliente_nombre}}</p>
+        <p>Atención: {{atencion}}</p>
+    </div>
+
+    <p>A continuación pongo a su consideración la siguiente cotización:</p>
+
+    <table class="items">
+        <thead>
+            <tr>
+                <th>Cant.</th>
+                <th>Clave</th>
+                <th>Descripción</th>
+                <th style="text-align: right;">P.Unitario</th>
+                <th style="text-align: right;">Importe</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#items}}
+            <tr>
+                <td>{{cantidad}}</td>
+                <td>{{clave}}</td>
+                <td>{{descripcion}}</td>
+                <td style="text-align: right;">{{precio_unitario}} {{moneda}}</td>
+                <td style="text-align: right;">{{importe}} {{moneda}}</td>
+            </tr>
+            {{/items}}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table class="totals-table">
+            <tr><td class="label">Importe:</td><td class="amount">{{subtotal}} {{moneda}}</td></tr>
+            <tr><td class="label">I.V.A. (16%):</td><td class="amount">{{iva}} {{moneda}}</td></tr>
+            <tr><td class="label" style="font-size: 14px;">TOTAL:</td><td class="amount" style="font-size: 14px;">{{total}} {{moneda}}</td></tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>PRECIO EN {{moneda}}+IVA</p>
+        <p>COTIZACION CON VIGENCIA DE {{vigencia}} DIAS</p>
+        <p>Quedo a sus órdenes,</p>
+        
+        <div class="signature">
+            DANIEL GAONA
+        </div>
+    </div>
+</body>
+</html>
