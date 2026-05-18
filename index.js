@@ -133,6 +133,26 @@ app.post('/api/catalog/sync', async (req, res) => {
     });
 });
 
+// Obtener la URL del último PDF cotizado para un número de teléfono específico
+app.get('/api/quote/latest', (req, res) => {
+    const { telefono } = req.query;
+    if (!telefono) {
+        return res.status(400).json({ error: "Se requiere el parámetro 'telefono'" });
+    }
+    const cleanPhone = telefono.replace(/[^0-9]/g, '');
+    const latestQuotesPath = path.join(__dirname, 'latest_quotes.json');
+    let pdfUrl = null;
+    try {
+        if (fs.existsSync(latestQuotesPath)) {
+            const latestQuotes = JSON.parse(fs.readFileSync(latestQuotesPath, 'utf8'));
+            pdfUrl = latestQuotes[cleanPhone] || null;
+        }
+    } catch (e) {
+        console.error("Error al buscar cotización reciente:", e.message);
+    }
+    res.json({ pdfUrl });
+});
+
 
 // Función para formatear números como moneda
 const formatCurrency = (num) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -143,7 +163,8 @@ app.post('/api/quote/generate', async (req, res) => {
             cliente_nombre, 
             atencion, 
             items, // Array de { clave, cantidad }
-            tc = catalog.config.tipo_cambio_base 
+            tc = catalog.config.tipo_cambio_base,
+            telefono
         } = req.body;
 
         if (!items || !items.length) {
@@ -310,6 +331,26 @@ app.post('/api/quote/generate', async (req, res) => {
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
         const host = req.get('host');
         const pdfUrl = `${protocol}://${host}/quotes/${fileName}`;
+
+        // Registrar esta cotización para el teléfono en latest_quotes.json si viene especificado
+        if (telefono) {
+            const latestQuotesPath = path.join(__dirname, 'latest_quotes.json');
+            let latestQuotes = {};
+            try {
+                if (fs.existsSync(latestQuotesPath)) {
+                    latestQuotes = JSON.parse(fs.readFileSync(latestQuotesPath, 'utf8'));
+                }
+            } catch (e) {
+                console.error("Error al leer latest_quotes.json:", e.message);
+            }
+            const cleanPhone = telefono.replace(/[^0-9]/g, '');
+            latestQuotes[cleanPhone] = pdfUrl;
+            try {
+                fs.writeFileSync(latestQuotesPath, JSON.stringify(latestQuotes, null, 2), 'utf8');
+            } catch (e) {
+                console.error("Error al escribir latest_quotes.json:", e.message);
+            }
+        }
 
         // 5. Enviar PDF en base64 para n8n y Evolution API con su URL pública
         const base64Pdf = Buffer.from(pdfBuffer).toString('base64');
